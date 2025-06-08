@@ -12,14 +12,15 @@ public class ATM {
     /** Scanner to scan in data from STDOUT */
     private Scanner scanIn;
     /** 2D Array of all accounts attached to a bank/ATM */
-    private ArrayList<ArrayList<Integer>> bankInfo;
+    private ArrayList<Account> bankInfo;
     /** index of the current account being used on ATM */
     private int activeAccount;
     private boolean isAccountActive;
 
-    public ATM(ArrayList<ArrayList<Integer>> bankInfo) {
+    public ATM(ArrayList<Account> bankInfo) {
         this.scanIn = new Scanner(System.in);
         this.bankInfo = bankInfo;
+        this.activeAccount = -1;
         welcomeMenu();
     }
 
@@ -37,12 +38,12 @@ public class ATM {
             try {
                 Integer num = this.scanIn.nextInt();
                 for (int i = 0; i < bankInfo.size(); i++) {
-                    if(bankInfo.get(i).contains(num)) {
-                        activeAccount = bankInfo.indexOf(num);
+                    if(bankInfo.get(i).getAccountNumber() == num) {
+                        activeAccount = i;
                         condition = true;
                     }
                 }
-               if (activeAccount == 0) {
+               if (activeAccount == -1) {
                     System.out.println(
                             "Error: re-enter account number"
                     );
@@ -61,8 +62,8 @@ public class ATM {
         boolean condition = false;
         while(!condition) {
             try {
-                Integer num = this.scanIn.nextInt();
-                if (bankInfo.get(activeAccount).get(1).equals(num)) {
+                int num = this.scanIn.nextInt();
+                if (bankInfo.get(activeAccount).getAccountPin() == num) {
                     isAccountActive = true;
                     condition = true;
                 } else {
@@ -100,6 +101,7 @@ public class ATM {
                 } else if (option == 4) {
 
                 } else if (option == 0) {
+                    activeAccount = -1;
                     welcomeMenu();
                     condition = true;
                 }

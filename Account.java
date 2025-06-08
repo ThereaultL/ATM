@@ -4,7 +4,6 @@ public class Account {
     private int accountBalance;
     private String statement;
 
-
     public Account(int num, int pin) {
         this.accountNumber = num;
         this.accountPin = pin;

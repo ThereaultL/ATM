@@ -9,25 +9,21 @@ import java.util.ArrayList;
 
 public class Driver {
     /** default admin account for ATM **/
-    private ArrayList<Integer> admin;
-    /** default user account for ATM **/
-    private ArrayList<Integer> user;
+    private Account admin;
     /** 2D Array of all accounts attached to a bank/ATM **/
-    private ArrayList<ArrayList<Integer>> bankInfo;
+    private ArrayList<Account> bank;
 
     public Driver() {
-        this.admin = new ArrayList<>();
-        this.admin.add(88888888);
-        this.admin.add(4444);
-        this.user = new ArrayList<>();
-        this.user.add(12345678);
-        this.user.add(1234);
-    
-        this.bankInfo = new ArrayList<>();
-        this.bankInfo.add(admin);
-        this.bankInfo.add(user);
+        this.admin = new Account(88888888, 4444);
+        Account user = new Account(12345678, 1234);
+        user.setAccountBalance(7000);
 
-        new ATM(this.bankInfo);
+
+        this.bank = new ArrayList<>();
+        this.bank.add(admin);
+        this.bank.add(user);
+
+        new ATM(this.bank);
     }
 
     public static void main(String[] args) {
