@@ -1,3 +1,9 @@
+/**
+ * Description here
+ * @author Lillian Thereault
+ * @version June 2025
+ */
+
 public class Account {
     private final int accountNumber;
     private int accountPin;
