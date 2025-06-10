@@ -9,18 +9,18 @@ import java.util.Scanner;
 
 public class ATM {
     /** Scanner to scan in data from STDOUT */
-    private Scanner scanIn;
+    private final Scanner scanIn;
     /** 2D Array of all accounts attached to a bank/ATM */
     private ArrayList<Account> bankInfo;
     /** index of the current account being used on ATM */
-    private int activeAccount;
+    private Account activeAccount;
     /** called to see whether a user is active or not */
     private boolean isAccountActive;
     /** The current balance inside the ATM */
     private int machineBalance;
 
     /**
-     * Creates a ATM object using an array of accounts, setting the ATM's
+     * Creates an ATM object using an array of accounts, setting the ATM's
      * balance to zero before starting opening the machines welcome menu
      * @param bankInfo array of Account objects
      */
@@ -37,7 +37,7 @@ public class ATM {
      * entering their personal pin
      */
     private void welcomeMenu() {
-        this.activeAccount = -1;
+        this.activeAccount = null;
         enterAccountNum();
         enterAccountPin();
     }
@@ -59,13 +59,13 @@ public class ATM {
                 int num = this.scanIn.nextInt();
                 for (int i = 0; i < bankInfo.size(); i++) {
                     //check if account number exists inside bankInfo
-                    if(bankInfo.get(i).getAccountNumber() == num) {
-                        activeAccount = i;
+                    if(this.bankInfo.get(i).getAccountNumber() == num) {
+                        activeAccount = this.bankInfo.get(i);
                         condition = true;
                     }
                 }
                 //account did not exist inside bankInfo
-               if (activeAccount == -1) {
+               if (activeAccount == null) {
                     System.out.println(
                             "Error: re-enter account number"
                     );
@@ -94,7 +94,7 @@ public class ATM {
                 int num = this.scanIn.nextInt();
                 //Using the active account, compare the pin entered with
                 //account pin
-                if (bankInfo.get(activeAccount).getAccountPin() == num) {
+                if (this.activeAccount.getAccountPin() == num) {
                     mainMenu();
                     condition = true;
                 } else {
@@ -115,7 +115,7 @@ public class ATM {
      * respective menu for the account type
      */
     private void mainMenu () {
-        if(this.bankInfo.get(this.activeAccount).getIsAdmin()) {
+        if(this.activeAccount.getIsAdmin()) {
             adminMainMenu();
         } else {
             userMainMenu();
@@ -133,7 +133,7 @@ public class ATM {
             boolean condition = false;
             while(!condition) {
                 System.out.println(
-                        "\n========User========\n1: Check Available Balance\n2: " +
+                        "\n========" + this.activeAccount.getFullName() + "========\n1: Check Available Balance\n2: " +
                         "Withdraw\n3: Deposit\n4: Transfer Funds\n0: Exit\n=========" +
                         "===========\nPlease enter an option using the pin pad: "
                 );
@@ -141,7 +141,7 @@ public class ATM {
 
                 if (option == 1) {
                     System.out.println(
-                            this.bankInfo.get(this.activeAccount).toString()
+                            this.activeAccount.toString()
                     );
                 } else if (option == 2) {
                     withdraw();
@@ -180,9 +180,7 @@ public class ATM {
                 //checks if machine carries desired amount
                 if(this.machineBalance >= amt) {
                     //checks if account can withdraw desired amount
-                    int success = this.bankInfo.get(
-                            this.activeAccount
-                    ).decrementBalance(amt);
+                    int success = this.activeAccount.decrementBalance(amt);
                     condition = canWithdraw(success, amt);
                 } else {
                     System.out.println(
@@ -215,9 +213,7 @@ public class ATM {
         } else {
             System.out.println(
                     "Successfully withdrew $" + amt +
-                            "\nNew balance: $" +  this.bankInfo.get(
-                            this.activeAccount
-                    ).getAccountBalance()
+                            "\nNew balance: $" + this.activeAccount.getAccountBalance()
             );
             result = true;
         }
@@ -236,11 +232,11 @@ public class ATM {
                     "\n-----Deposit-----\nEnter you deposit amount before inserting cash:"
             );
             int amt = scanIn.nextInt();
-            this.bankInfo.get(this.activeAccount).incrementBalance(amt);
+            this.activeAccount.incrementBalance(amt);
             System.out.println(
                     "Successfully deposited $" + amt +
                     "\nNew balance: $" +
-                    this.bankInfo.get(this.activeAccount).getAccountBalance()
+                    this.activeAccount.getAccountBalance()
             );
             this.machineBalance += amt;
         } catch (IllegalArgumentException err) {

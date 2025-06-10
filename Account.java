@@ -3,19 +3,22 @@ public class Account {
     private int accountPin;
     private int accountBalance;
     private final boolean isAdmin;
+    private String fullName;
 
-    public Account (int num, int pin) {
+    public Account (int num, int pin, String fullName) {
         this.accountNumber = num;
         this.accountPin = pin;
         this.accountBalance = 0;
         this.isAdmin = false;
+        this.fullName = fullName;
     }
 
-    public Account (int num, int pin, boolean isAdmin) {
+    public Account (int num, int pin, boolean isAdmin, String fullName) {
         this.accountNumber = num;
         this.accountPin = pin;
         this.accountBalance = 0;
         this.isAdmin = isAdmin;
+        this.fullName = fullName;
     }
 
     public int getAccountNumber() { return this.accountNumber; }
@@ -46,6 +49,10 @@ public class Account {
         }
         return result;
     }
+
+    public String getFullName() { return this.fullName; }
+
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
     public String toString() {
         StringBuilder result = new StringBuilder();
