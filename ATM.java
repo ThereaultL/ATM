@@ -51,7 +51,7 @@ public class ATM {
      */
     private void enterAccountNum() {
         System.out.println(
-                "Welcome!\nPlease enter your account number on the pin pad"
+                "\nWelcome!\nPlease enter your account number on the pin pad"
         );
         boolean condition = false;
         while(!condition) {
@@ -129,18 +129,16 @@ public class ATM {
      * an option until correct usage. Does not allow for non-int datatypes
      */
     private void userMainMenu() {
-        System.out.println(
-                "\n====================\n1: Check Available Balance\n2: " +
-                "Withdraw\n3: Deposit\n4: Transfer Funds\n0: Exit\n=========" +
-                "===========\n"
-        );
         try {
-            int option = this.scanIn.nextInt();
             boolean condition = false;
             while(!condition) {
                 System.out.println(
-                        "Please enter an option using the pin pad: "
+                        "\n========User========\n1: Check Available Balance\n2: " +
+                        "Withdraw\n3: Deposit\n4: Transfer Funds\n0: Exit\n=========" +
+                        "===========\nPlease enter an option using the pin pad: "
                 );
+                int option = this.scanIn.nextInt();
+
                 if (option == 1) {
                     System.out.println(
                             this.bankInfo.get(this.activeAccount).toString()
@@ -189,7 +187,7 @@ public class ATM {
                 } else {
                     System.out.println(
                             "\n-----Machine has Insufficient Funds-----\n" +
-                            "Please contact machine admin for assistance\n"
+                            "Please contact machine admin for assistance"
                     );
                 }
 
@@ -219,7 +217,7 @@ public class ATM {
                     "Successfully withdrew $" + amt +
                             "\nNew balance: $" +  this.bankInfo.get(
                             this.activeAccount
-                    ).getAccountBalance() + "\n"
+                    ).getAccountBalance()
             );
             result = true;
         }
@@ -243,7 +241,6 @@ public class ATM {
                     "Successfully deposited $" + amt +
                     "\nNew balance: $" +
                     this.bankInfo.get(this.activeAccount).getAccountBalance()
-                    + "\n"
             );
             this.machineBalance += amt;
         } catch (IllegalArgumentException err) {
@@ -263,18 +260,16 @@ public class ATM {
     }
 
     private void adminMainMenu() {
-        System.out.println(
-                "\n====================\n1: Check Machine Balance\n2: " +
-                "Machine Withdraw\n3: Machine Deposit\n4: View Statement\n0:"
-                + " Exit\n====================\n"
-        );
         try {
-            int option = this.scanIn.nextInt();
             boolean condition = false;
             while (!condition) {
                 System.out.println(
-                        "Please enter an option using the pin pad: "
+                        "\n========Admin========\n1: Check Machine Balance\n2: " +
+                        "Machine Withdraw\n3: Machine Deposit\n4: Print Machine Statement\n0:"
+                        + " Exit\n=====================\n\nPlease enter an option using the pin pad: "
                 );
+                int option = this.scanIn.nextInt();
+
                 if (option == 1) {
                     checkMachineBalance();
                 } else if (option == 2) {
@@ -284,7 +279,7 @@ public class ATM {
                 } else if (option == 4) {
                     printStatement();
                 } else if (option == 0) {
-                    mainMenu();
+                    welcomeMenu();
                     condition = true;
                 }
             }
@@ -298,7 +293,7 @@ public class ATM {
     private void checkMachineBalance() {
         System.out.println(
                 "\n-----Check Machine Balance-----\n Machine Balance: $" +
-                this.machineBalance + "\n"
+                this.machineBalance
         );
     }
 
@@ -340,7 +335,6 @@ public class ATM {
                     "Successfully deposited $" + amt +
                             "\nNew balance: $" +
                             this.machineBalance
-                            + "\n"
             );
         } catch (IllegalArgumentException err) {
             System.out.println("Error: Please enter an integer");
