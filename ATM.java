@@ -14,9 +14,16 @@ public class ATM {
     private ArrayList<Account> bankInfo;
     /** index of the current account being used on ATM */
     private int activeAccount;
+    /** called to see whether a user is active or not */
     private boolean isAccountActive;
+    /** The current balance inside the ATM */
     private int machineBalance;
 
+    /**
+     * Creates a ATM object using an array of accounts, setting the ATM's
+     * balance to zero before starting opening the machines welcome menu
+     * @param bankInfo array of Account objects
+     */
     public ATM(ArrayList<Account> bankInfo) {
         this.scanIn = new Scanner(System.in);
         this.bankInfo = bankInfo;
@@ -24,12 +31,24 @@ public class ATM {
         welcomeMenu();
     }
 
+    /**
+     * Sets the active account to -1, meaning there is currently no active
+     * user, before prompting for user to enter their account number before
+     * entering their personal pin
+     */
     private void welcomeMenu() {
         this.activeAccount = -1;
         enterAccountNum();
         enterAccountPin();
     }
 
+    /**
+     * Prompts the user to enter their account number into the machine to
+     * identify the user
+     * Ensures user types in a valid account number associated with
+     * the corresponding bank
+     * Only allows for integer input
+     */
     private void enterAccountNum() {
         System.out.println(
                 "Welcome!\nPlease enter your account number on the pin pad"
@@ -39,11 +58,13 @@ public class ATM {
             try {
                 int num = this.scanIn.nextInt();
                 for (int i = 0; i < bankInfo.size(); i++) {
+                    //check if account number exists inside bankInfo
                     if(bankInfo.get(i).getAccountNumber() == num) {
                         activeAccount = i;
                         condition = true;
                     }
                 }
+                //account did not exist inside bankInfo
                if (activeAccount == -1) {
                     System.out.println(
                             "Error: re-enter account number"
@@ -58,14 +79,22 @@ public class ATM {
         }
     }
 
+    /**
+     * Prompts the user to enter their account pin into the machine to
+     * verify the users logon
+     * Ensures user types in a valid pin associated with the user account
+     * number
+     * Only allows for integer input
+     */
     private void enterAccountPin() {
         System.out.println("Please enter your personal pin on the pin pad");
         boolean condition = false;
         while(!condition) {
             try {
                 int num = this.scanIn.nextInt();
+                //Using the active account, compare the pin entered with
+                //account pin
                 if (bankInfo.get(activeAccount).getAccountPin() == num) {
-                    isAccountActive = true;
                     mainMenu();
                     condition = true;
                 } else {
@@ -81,6 +110,10 @@ public class ATM {
         }
     }
 
+    /**
+     * Determines if the active account is an admin, or user, and calls the
+     * respective menu for the account type
+     */
     private void mainMenu () {
         if(this.bankInfo.get(this.activeAccount).getIsAdmin()) {
             adminMainMenu();
@@ -89,10 +122,16 @@ public class ATM {
         }
     }
 
+    /**
+     * Prompts the user with 5 (keys 0-4) options, check available balance,
+     * withdraw, deposit, transfer funds, and exit. If user enters an integer
+     * which does not exist on the menu, they will be prompted to re-enter
+     * an option until correct usage. Does not allow for non-int datatypes
+     */
     private void userMainMenu() {
         System.out.println(
                 "\n====================\n1: Check Available Balance\n2: " +
-                "Withdraw\n3: Deposit\n4: View Statement\n0: Exit\n=========" +
+                "Withdraw\n3: Deposit\n4: Transfer Funds\n0: Exit\n=========" +
                 "===========\n"
         );
         try {
@@ -111,7 +150,7 @@ public class ATM {
                 } else if (option == 3) {
                     deposit();
                 } else if (option == 4) {
-                    viewStatement();
+                    transferFunds();
                 } else if (option == 0) {
                     welcomeMenu();
                     condition = true;
@@ -124,6 +163,14 @@ public class ATM {
         }
     }
 
+    /**
+     * Prompts user to enter the dollar amount which they would like to
+     * withdraw from their account, handles for integers only. Checks
+     * the balance of their account, and the machine to ensure user can
+     * withdraw the desired ammount. Prints corresponding error message
+     * if withdraw can not be completed. When successfully withdrew,
+     * the amount will be subtracted from the total machine balance
+     */
     private void withdraw () {
         boolean condition = false;
         while(!condition) {
@@ -132,7 +179,9 @@ public class ATM {
                         "\n-----Withdraw-----\nEnter withdraw amount:"
                 );
                 int amt = scanIn.nextInt();
+                //checks if machine carries desired amount
                 if(this.machineBalance >= amt) {
+                    //checks if account can withdraw desired amount
                     int success = this.bankInfo.get(
                             this.activeAccount
                     ).decrementBalance(amt);
@@ -152,6 +201,13 @@ public class ATM {
         }
     }
 
+    /**
+     * Determines if the user has the sufficient funds in their account
+     * to withdraw a desired amount
+     * @param success 1 if sufficient funds, 0 if insufficient funds
+     * @param amt amount to withdraw
+     * @return true/false
+     */
     private boolean canWithdraw (int success, int amt) {
         boolean result = false;
         if(success == -1) {
@@ -170,6 +226,12 @@ public class ATM {
         return result;
     }
 
+    /**
+     * Prompts the user to enter the desired amount in which they would like
+     * to deposit to their account in cash, must be an integer. When
+     * successfully deposited to account, the amount is added to the total
+     * machine balance.
+     */
     private void deposit() {
         try {
             System.out.println(
@@ -189,7 +251,14 @@ public class ATM {
         }
     }
 
-    private void viewStatement () {
+    /**
+     * Prompts user to enter the account number which they would like to transfer funds to. Once
+     * confirmed the account exists within the bank, user will be asked if they would like to
+     * transfer from their account, or with cash. Each prompt user will be asked to typed desired
+     * amount on the pin pad, before asked to re-enter their account pin. Handles only integer
+     * datatype
+     */
+    private void transferFunds () {
 
     }
 
@@ -213,7 +282,7 @@ public class ATM {
                 } else if (option == 3) {
                     machineDeposit();
                 } else if (option == 4) {
-                    viewStatement(); //need to make an admin version
+                    printStatement();
                 } else if (option == 0) {
                     mainMenu();
                     condition = true;
@@ -281,4 +350,8 @@ public class ATM {
     private void incrementMachineBalance (int amt) { this.machineBalance += amt; }
 
     private void decrementMachineBalance (int amt) { this.machineBalance -= amt; }
+
+    private void printStatement () {
+
+    }
 }
