@@ -14,7 +14,7 @@ public class Driver {
     private ArrayList<Account> bank;
 
     public Driver() {
-        this.admin = new Account(88888888, 4444);
+        this.admin = new Account(88888888, 4444, true);
         Account user = new Account(12345678, 1234);
         user.setAccountBalance(7000);
 

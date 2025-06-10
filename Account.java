@@ -1,19 +1,21 @@
-/**
- * Description here
- * @author Lillian Thereault
- * @version June 2025
- */
-
 public class Account {
     private final int accountNumber;
     private int accountPin;
     private int accountBalance;
-    private String statement;
+    private final boolean isAdmin;
 
-    public Account(int num, int pin) {
+    public Account (int num, int pin) {
         this.accountNumber = num;
         this.accountPin = pin;
         this.accountBalance = 0;
+        this.isAdmin = false;
+    }
+
+    public Account (int num, int pin, boolean isAdmin) {
+        this.accountNumber = num;
+        this.accountPin = pin;
+        this.accountBalance = 0;
+        this.isAdmin = isAdmin;
     }
 
     public int getAccountNumber() { return this.accountNumber; }
@@ -32,6 +34,8 @@ public class Account {
 
     public int getAccountBalance() { return this.accountBalance; }
 
+    public boolean getIsAdmin() { return this.isAdmin; }
+
     public void incrementBalance(int amt) { this.accountBalance += amt; }
 
     public int decrementBalance(int amt) {
@@ -41,5 +45,13 @@ public class Account {
             result = 1;
         }
         return result;
+    }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append(
+                "\n-----Account Balance-----\n$" + this.accountBalance
+        );
+        return result.toString();
     }
 }
