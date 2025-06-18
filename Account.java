@@ -1,11 +1,11 @@
 public class Account {
-    private final int accountNumber;
-    private int accountPin;
+    private final String accountNumber;
+    private String accountPin;
     private int accountBalance;
     private final boolean isAdmin;
     private String fullName;
 
-    public Account (int num, int pin, String fullName) {
+    public Account (String num, String pin, String fullName) {
         this.accountNumber = num;
         this.accountPin = pin;
         this.accountBalance = 0;
@@ -13,7 +13,7 @@ public class Account {
         this.fullName = fullName;
     }
 
-    public Account (int num, int pin, boolean isAdmin, String fullName) {
+    public Account (String num, String pin, boolean isAdmin, String fullName) {
         this.accountNumber = num;
         this.accountPin = pin;
         this.accountBalance = 0;
@@ -21,17 +21,24 @@ public class Account {
         this.fullName = fullName;
     }
 
-    public int getAccountNumber() { return this.accountNumber; }
+    public String getAccountNumber() { return this.accountNumber; }
 
-    public void setAccountPin(int pin) {
-        if(Integer.toString(pin).length() == 4) {
-            this.accountPin = pin;
-        } else {
-            System.out.println("Personal pin must be four digits!");
+    public void setAccountPin(String pin) {
+        String err = "Personal pin must be four digits!";
+        try {
+            //ensure our pin is an integer
+            Integer.parseInt(pin);
+            if(pin.length() == 4) {
+                this.accountPin = pin;
+            } else {
+                System.out.println(err);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(err);
         }
     }
 
-    public int getAccountPin() { return this.accountPin; }
+    public String getAccountPin() { return this.accountPin; }
 
     public void setAccountBalance(int amt) { this.accountBalance = amt; }
 

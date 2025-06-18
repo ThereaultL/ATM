@@ -56,11 +56,11 @@ public class ATM {
         boolean condition = false;
         while(!condition) {
             try {
-                int num = this.scanIn.nextInt();
-                for (int i = 0; i < bankInfo.size(); i++) {
+                String num = this.scanIn.next();
+                for (Account account : bankInfo) {
                     //check if account number exists inside bankInfo
-                    if(this.bankInfo.get(i).getAccountNumber() == num) {
-                        activeAccount = this.bankInfo.get(i);
+                    if (account.getAccountNumber().equals(num)) {
+                        activeAccount = account;
                         condition = true;
                     }
                 }
@@ -91,10 +91,10 @@ public class ATM {
         boolean condition = false;
         while(!condition) {
             try {
-                int num = this.scanIn.nextInt();
+                String num = this.scanIn.next();
                 //Using the active account, compare the pin entered with
                 //account pin
-                if (this.activeAccount.getAccountPin() == num) {
+                if (this.activeAccount.getAccountPin().equals(num)) {
                     mainMenu();
                     condition = true;
                 } else {
