@@ -18,6 +18,7 @@ public class ATM {
     private boolean isAccountActive;
     /** The current balance inside the ATM */
     private int machineBalance;
+    private String machineStatement;
 
     /**
      * Creates an ATM object using an array of accounts, setting the ATM's
@@ -28,6 +29,7 @@ public class ATM {
         this.scanIn = new Scanner(System.in);
         this.bankInfo = bankInfo;
         this.machineBalance = 0;
+        this.machineStatement = "";
         welcomeMenu();
     }
 
@@ -37,8 +39,10 @@ public class ATM {
      * entering their personal pin
      */
     private void welcomeMenu() {
-        this.activeAccount = null;
-        enterAccountNum();
+        System.out.println(
+                "\nWelcome!\nPlease enter your account number on the pin pad"
+        );
+        this.activeAccount = enterAccountNum();
         enterAccountPin();
     }
 
@@ -49,23 +53,21 @@ public class ATM {
      * the corresponding bank
      * Only allows for integer input
      */
-    private void enterAccountNum() {
-        System.out.println(
-                "\nWelcome!\nPlease enter your account number on the pin pad"
-        );
+    private Account enterAccountNum() {
         boolean condition = false;
+        Account acc = null;
         while(!condition) {
             try {
                 String num = this.scanIn.next();
-                for (Account account : bankInfo) {
+                for (Account account : this.bankInfo) {
                     //check if account number exists inside bankInfo
                     if (account.getAccountNumber().equals(num)) {
-                        activeAccount = account;
+                        acc = account;
                         condition = true;
                     }
                 }
                 //account did not exist inside bankInfo
-               if (activeAccount == null) {
+               if (!condition) {
                     System.out.println(
                             "Error: re-enter account number"
                     );
@@ -77,6 +79,7 @@ public class ATM {
                 );
             }
         }
+        return acc;
     }
 
     /**
@@ -108,6 +111,13 @@ public class ATM {
                 );
             }
         }
+    }
+
+    private void addStatement(boolean deposit, int amt) {
+        StringBuilder result = new StringBuilder();
+        result.append(this.activeAccount.getFullName()).append(deposit ? "deposit" : "withdraw");
+        result.append(" $").append(amt).append("\n");
+        this.machineStatement += result.toString();
     }
 
     /**
@@ -170,13 +180,14 @@ public class ATM {
      * the amount will be subtracted from the total machine balance
      */
     private void withdraw () {
+        int amt = 0;
         boolean condition = false;
         while(!condition) {
             try {
                 System.out.println(
                         "\n-----Withdraw-----\nEnter withdraw amount:"
                 );
-                int amt = scanIn.nextInt();
+                amt = scanIn.nextInt();
                 //checks if machine carries desired amount
                 if(this.machineBalance >= amt) {
                     //checks if account can withdraw desired amount
@@ -195,6 +206,7 @@ public class ATM {
                 );
             }
         }
+        addStatement(false, amt);
     }
 
     /**
@@ -239,6 +251,7 @@ public class ATM {
                     this.activeAccount.getAccountBalance()
             );
             this.machineBalance += amt;
+            addStatement(true, amt);
         } catch (IllegalArgumentException err) {
             System.out.println("Error: Please enter an integer");
         }
@@ -252,7 +265,11 @@ public class ATM {
      * datatype
      */
     private void transferFunds () {
-
+        System.out.println("Please enter the account number you would like to transfer to");
+        Account transferTo = enterAccountNum();
+        //prompt user to re-enter their personal pin
+        //prompt user to enter amount they would like to transfer
+        //withdraw amount from active account, deposit into transfer account
     }
 
     private void adminMainMenu() {
@@ -294,13 +311,14 @@ public class ATM {
     }
 
     private void machineWithdraw () {
+        int amt = 0;
         boolean condition = false;
         while(!condition) {
             try {
                 System.out.println(
                         "\n-----Machine Withdraw-----\nEnter withdraw amount:"
                 );
-                int amt = scanIn.nextInt();
+                amt = scanIn.nextInt();
                 if(this.machineBalance >= amt) {
                     this.decrementMachineBalance(amt);
                     condition = true;
@@ -317,6 +335,7 @@ public class ATM {
                 );
             }
         }
+        addStatement(false, amt);
     }
 
     private void machineDeposit () {
@@ -332,6 +351,7 @@ public class ATM {
                             "\nNew balance: $" +
                             this.machineBalance
             );
+            addStatement(true, amt);
         } catch (IllegalArgumentException err) {
             System.out.println("Error: Please enter an integer");
         }
@@ -342,6 +362,7 @@ public class ATM {
     private void decrementMachineBalance (int amt) { this.machineBalance -= amt; }
 
     private void printStatement () {
-
+            checkMachineBalance();
+            System.out.println(this.machineBalance);
     }
 }
