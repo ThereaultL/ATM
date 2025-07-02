@@ -1,5 +1,8 @@
 /**
- * Description Here
+ * Allows users which exist within a bank and admin to access ATM properties such as,
+ * check balance, withdraw, deposit, transfer funds, and print statements. User capabilities
+ * depend on whether the user's account is an admin or not. Machine has safeguards to ensure
+ * users to not overdraft accounts, or withdraw more cash than what the machine currently contains.
  * @author Lillian Thereault
  * @version June 2025
  */
@@ -265,13 +268,39 @@ public class ATM {
      * datatype
      */
     private void transferFunds () {
-        System.out.println("Please enter the account number you would like to transfer to");
+        System.out.println(
+                "\n-----Transfer-----\nPlease enter the account number you would like"+
+                " to transfer to"
+        );
         Account transferTo = enterAccountNum();
         //prompt user to re-enter their personal pin
-        //prompt user to enter amount they would like to transfer
-        //withdraw amount from active account, deposit into transfer account
+        enterAccountPin();
+
+        int amt = 0;
+        boolean condition = false;
+        while(!condition) {
+            try {
+                System.out.println(
+                        "Enter amount you would like to transfer:"
+                );
+                amt = scanIn.nextInt();
+                int success = this.activeAccount.decrementBalance(amt);
+                condition = canWithdraw(success, amt);
+            } catch (IllegalArgumentException err) {
+                System.out.println(
+                        "Error: Please enter an integer"
+                );
+            }
+        }
+        transferTo.incrementBalance(amt);
     }
 
+    /**
+     * Prompts the admin with 5 (keys 0-4) options, check machine balance,
+     * withdraw from machine, deposit into machine, print statement, and exit. If user enters
+     * an integer which does not exist on the menu, they will be prompted to re-enter
+     * an option until correct usage. Does not allow for non-int datatypes
+     */
     private void adminMainMenu() {
         try {
             boolean condition = false;
@@ -303,6 +332,9 @@ public class ATM {
         }
     }
 
+    /**
+     * Prints the machines balance to the console.
+     */
     private void checkMachineBalance() {
         System.out.println(
                 "\n-----Check Machine Balance-----\n Machine Balance: $" +
@@ -310,6 +342,11 @@ public class ATM {
         );
     }
 
+    /**
+     * Allows admin users to remove cash from the machine. Ensures that admin does not
+     * withdraw more than what is currently available. Additionally, ensures admin enters
+     * a valid integer when withdrawing.
+     */
     private void machineWithdraw () {
         int amt = 0;
         boolean condition = false;
@@ -338,6 +375,9 @@ public class ATM {
         addStatement(false, amt);
     }
 
+    /**
+     * Allows admin users to add cash to the machine. Insures that the admin enters a valid number.
+     */
     private void machineDeposit () {
         try {
             System.out.println(
@@ -357,12 +397,23 @@ public class ATM {
         }
     }
 
+    /**
+     * Increments the machine's balance by the param.
+     * @param amt amount to increment
+     */
     private void incrementMachineBalance (int amt) { this.machineBalance += amt; }
 
+    /**
+     * Decrements the machine's balance by the param.
+     * @param amt amount to decrement
+     */
     private void decrementMachineBalance (int amt) { this.machineBalance -= amt; }
 
+    /**
+     * Prints a statement off all transactions made on the machine to the console.
+     */
     private void printStatement () {
             checkMachineBalance();
-            System.out.println(this.machineBalance);
+            System.out.println(this.machineStatement);
     }
 }
