@@ -47,6 +47,7 @@ public class ATM {
         );
         this.activeAccount = enterAccountNum();
         enterAccountPin();
+        mainMenu();
     }
 
     /**
@@ -101,7 +102,6 @@ public class ATM {
                 //Using the active account, compare the pin entered with
                 //account pin
                 if (this.activeAccount.getAccountPin().equals(num)) {
-                    mainMenu();
                     condition = true;
                 } else {
                     System.out.println(
