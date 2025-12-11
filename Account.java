@@ -6,11 +6,7 @@ public class Account {
     private String fullName;
 
     public Account (String num, String pin, String fullName) {
-        this.accountNumber = num;
-        this.accountPin = pin;
-        this.accountBalance = 0;
-        this.isAdmin = false;
-        this.fullName = fullName;
+        this(num, pin, false, fullName);
     }
 
     public Account (String num, String pin, boolean isAdmin, String fullName) {
