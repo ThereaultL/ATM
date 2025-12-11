@@ -44,6 +44,7 @@ public class ATM {
     private void welcomeMenu() {
         System.out.println(
                 "\nWelcome!\nPlease enter your account number on the pin pad"
+                +"\nOr enter QUIT to exit"
         );
         this.activeAccount = enterAccountNum();
         enterAccountPin();
@@ -62,12 +63,16 @@ public class ATM {
         Account acc = null;
         while(!condition) {
             try {
+                System.out.print(">");
                 String num = this.scanIn.next();
                 for (Account account : this.bankInfo) {
                     //check if account number exists inside bankInfo
                     if (account.getAccountNumber().equals(num)) {
                         acc = account;
                         condition = true;
+                    } else if (num.equals("QUIT")) {
+                        System.out.println("Exiting Program\nGoodbye!");
+                        System.exit(1);
                     }
                 }
                 //account did not exist inside bankInfo
@@ -94,15 +99,20 @@ public class ATM {
      * Only allows for integer input
      */
     private void enterAccountPin() {
-        System.out.println("Please enter your personal pin on the pin pad");
+        System.out.println("Please enter your personal pin on the pin pad\n"+
+                "Or enter QUIT to exit");
         boolean condition = false;
         while(!condition) {
             try {
+                System.out.print(">");
                 String num = this.scanIn.next();
                 //Using the active account, compare the pin entered with
                 //account pin
                 if (this.activeAccount.getAccountPin().equals(num)) {
                     condition = true;
+                } else if (num.equals("QUIT")) {
+                    System.out.println("Exiting Program\nGoodbye!");
+                    System.exit(1);
                 } else {
                     System.out.println(
                             "Error: re-enter personal pin"
@@ -118,7 +128,7 @@ public class ATM {
 
     private void addStatement(boolean deposit, int amt) {
         StringBuilder result = new StringBuilder();
-        result.append(this.activeAccount.getFullName()).append(deposit ? "deposit" : "withdraw");
+        result.append(this.activeAccount.getFullName()).append(deposit ? " deposit" : " withdraw");
         result.append(" $").append(amt).append("\n");
         this.machineStatement += result.toString();
     }
@@ -163,8 +173,8 @@ public class ATM {
                 } else if (option == 4) {
                     transferFunds();
                 } else if (option == 0) {
-                    welcomeMenu();
                     condition = true;
+                    welcomeMenu();
                 }
             }
         } catch (IllegalArgumentException err) {
