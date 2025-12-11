@@ -7,26 +7,22 @@
 
 import java.util.ArrayList;
 
+/**
+ * Creates fake user and admin for testing and simulation
+ * @author Lillian Thereault
+ */
 public class Driver {
-    /** default admin account for ATM **/
-    private Account admin;
-    /** 2D Array of all accounts attached to a bank/ATM **/
-    private ArrayList<Account> bank;
 
-    public Driver() {
-        this.admin = new Account(88888888, 4444, true);
-        Account user = new Account(12345678, 1234);
+    public static void main(String[] args) {
+        Account admin = new Account("88888888", "4444", true, "Admin");
+        Account user = new Account("12345678", "1234", "John Doe");
         user.setAccountBalance(7000);
 
 
-        this.bank = new ArrayList<>();
-        this.bank.add(admin);
-        this.bank.add(user);
+        ArrayList<Account> bank = new ArrayList<>();
+        bank.add(admin);
+        bank.add(user);
 
-        new ATM(this.bank);
-    }
-
-    public static void main(String[] args) {
-        new Driver();
+        new ATM(bank);
     }
 }
